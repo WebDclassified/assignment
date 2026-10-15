@@ -4,7 +4,8 @@
     "api": {
       "root": "apps/api",
       "framework": "express",
-      "buildCommand": "pnpm --filter @pathlens/contracts build"
+      "entrypoint": "dist/server.bundle.cjs",
+      "buildCommand": "pnpm --filter @pathlens/contracts build && pnpm --filter @pathlens/api build && pnpm --filter @pathlens/api bundle"
     },
     "dashboard": {
       "root": "apps/dashboard",

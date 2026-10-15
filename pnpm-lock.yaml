@@ -50,6 +50,9 @@ importers:
       '@types/supertest':
         specifier: ^6.0.0
         version: 6.0.3
+      esbuild:
+        specifier: ^0.21.0
+        version: 0.21.5
       eslint:
         specifier: ^9.0.0
         version: 9.39.5(jiti@1.21.7)

@@ -38,7 +38,10 @@ deploys as two services on one domain — `api` (Express, serves `/api/*` and
 `/health`) and `dashboard` (Vite static build, serves everything else) — so
 dashboard, demos, and API share one origin and no CORS setup is needed. There
 are no inter-service bindings: the browser calls the API over the public
-routes, and the API only calls external MongoDB Atlas.
+routes, and the API only calls external MongoDB Atlas. The api service ships a
+self-contained esbuild bundle (`pnpm --filter @pathlens/api bundle`, mongodb
+included) as its entrypoint, so the function never depends on the install
+layout at runtime.
 
 ## Tech stack
 

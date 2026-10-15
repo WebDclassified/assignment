@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --build",
+    "bundle": "esbuild src/server.ts --bundle --platform=node --format=cjs --outfile=dist/server.bundle.cjs --external:kerberos --external:@mongodb-js/zstd --external:snappy --external:aws4 --external:@aws-sdk/credential-providers --external:gcp-metadata --external:socks --log-level=warning",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --max-warnings 0 src",
@@ -27,6 +28,7 @@
     "@types/express": "^4.17.21",
     "@types/node": "^22.0.0",
     "@types/supertest": "^6.0.0",
+    "esbuild": "^0.21.0",
     "eslint": "^9.0.0",
     "globals": "^15.0.0",
     "mongodb-memory-server": "^11.3.0",

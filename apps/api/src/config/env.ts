@@ -41,8 +41,12 @@ export type Environment = z.infer<typeof envSchema>;
 export function loadEnvironment(): Environment {
   const parsed = envSchema.safeParse(process.env);
   if (!parsed.success) {
-    console.error("Invalid API environment configuration:", parsed.error.flatten().fieldErrors);
-    process.exit(1);
+    // Throw instead of exiting: the long-lived server translates this into a
+    // startup failure, while a serverless isolate must surface the error to
+    // the platform (and its logs) instead of dying silently.
+    throw new Error(
+      `Invalid API environment configuration: ${JSON.stringify(parsed.error.flatten().fieldErrors)}`,
+    );
   }
   return parsed.data;
 }

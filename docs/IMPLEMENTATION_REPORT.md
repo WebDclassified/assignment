@@ -140,6 +140,21 @@ start`, Vercel same-origin deployment, and 101 passing tests.
   untouched — it already matches the documented Express detection pattern.
 - README + architecture docs updated for the services topology.
 
+## Follow-up pass (Vercel missing-module fix)
+
+- Production logs showed `Cannot find module 'mongodb'` with require stack at
+  `apps/api/package.json` — identical under the old single-function config and
+  the new services config, proving the bug is Vercel's function packaging
+  (bare imports externalized, pnpm-symlinked `node_modules` unusable at
+  runtime), not the routing topology.
+- Fix: the api service now builds a self-contained esbuild bundle
+  (`dist/server.bundle.cjs`, mongodb inlined, optional native deps external)
+  and serves it via `entrypoint`. Proven locally: the bundle boots against
+  Atlas, ingests, deduplicates, and serves reads with no `node_modules`
+  involvement (no `require("mongodb")` remains in the bundle).
+- `vercel.json` api service gained the explicit `entrypoint`; dashboard
+  service unchanged.
+
 ## Remaining limitations
 
 - Session timelines cap at 100/page (documented, paginated).
