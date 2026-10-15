@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart — Aurora Supply</title>
+    <link rel="stylesheet" href="/demo/styles.css" />
+    <script
+      type="module"
+      src="/demo/tracker-entry.js"
+      data-api-base=""
+      data-site-id="demo-store"
+    ></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/demo/">Aurora<span class="brand-dot">.</span>Supply</a>
+      <nav aria-label="Main">
+        <a href="/demo/products/">Products</a>
+        <a href="/demo/cart/" aria-current="page">Cart <span class="cart-count" id="cart-count">0</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <p class="breadcrumbs"><a href="/demo/">Home</a> / Cart</p>
+
+      <section class="panel" id="cart-empty">
+        <h1>Your cart is empty</h1>
+        <p>Nothing here yet — have a look at what just came in.</p>
+        <div class="cart-actions">
+          <a class="btn" href="/demo/products/">Explore products</a>
+        </div>
+      </section>
+
+      <section class="panel" id="cart-filled" hidden>
+        <h1>Your cart</h1>
+        <div id="cart-lines"></div>
+        <div class="cart-total">
+          <span>Total</span>
+          <span id="cart-item-total">$0</span>
+        </div>
+        <div class="cart-actions">
+          <a class="btn" href="/demo/checkout/">Continue to checkout</a>
+          <a class="btn btn-quiet" href="/demo/products/">Keep browsing</a>
+          <button class="btn btn-quiet" id="cart-clear" type="button">Clear cart</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Aurora Supply is a fictional storefront used to generate Pathlens demo events.</p>
+    </footer>
+
+    <script>
+      const CATALOG = {
+        headphones: { name: "Drift Wireless Headphones", priceCents: 18900 },
+        keyboard: { name: "Slate Compact Keyboard", priceCents: 12900 },
+        "desk-mat": { name: "Harbor Desk Mat", priceCents: 4400 },
+      };
+      const STORAGE_KEY = "aurora-cart-v1";
+
+      function readCart() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+          return typeof parsed === "object" && parsed !== null ? parsed : {};
+        } catch {
+          return {};
+        }
+      }
+
+      function writeCart(cart) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+        } catch {
+          // Storage can be unavailable in private browsing; the page still works for one visit.
+        }
+      }
+
+      function money(cents) {
+        return `$${(cents / 100).toFixed(0)}`;
+      }
+
+      const params = new URLSearchParams(location.search);
+      const added = params.get("add") || params.get("item");
+      const cart = readCart();
+      if (added && CATALOG[added]) {
+        cart[added] = (cart[added] || 0) + 1;
+        writeCart(cart);
+        history.replaceState({}, "", location.pathname);
+      }
+
+      const lines = document.getElementById("cart-lines");
+      const emptyPanel = document.getElementById("cart-empty");
+      const filledPanel = document.getElementById("cart-filled");
+      const count = document.getElementById("cart-count");
+      const total = document.getElementById("cart-item-total");
+
+      function render() {
+        const valid = Object.entries(cart).filter(([id, quantity]) => quantity > 0 && CATALOG[id]);
+        lines.replaceChildren();
+        let itemCount = 0;
+        let totalCents = 0;
+
+        for (const [id, quantity] of valid) {
+          const item = CATALOG[id];
+          itemCount += quantity;
+          totalCents += item.priceCents * quantity;
+          const row = document.createElement("div");
+          row.className = "cart-line";
+
+          const name = document.createElement("div");
+          name.className = "cart-line-name";
+          const title = document.createElement("span");
+          title.textContent = item.name;
+          const unit = document.createElement("span");
+          unit.className = "cart-line-unit";
+          unit.textContent = `${money(item.priceCents)} each`;
+          name.append(title, unit);
+
+          const controls = document.createElement("div");
+          controls.className = "cart-line-controls";
+          const decrease = document.createElement("button");
+          decrease.type = "button";
+          decrease.className = "qty-btn";
+          decrease.textContent = "−";
+          decrease.setAttribute("aria-label", `Remove one ${item.name}`);
+          decrease.addEventListener("click", () => {
+            cart[id] = Math.max(0, (cart[id] || 0) - 1);
+            writeCart(cart);
+            render();
+          });
+          const amount = document.createElement("span");
+          amount.className = "qty-value";
+          amount.textContent = String(quantity);
+          const increase = document.createElement("button");
+          increase.type = "button";
+          increase.className = "qty-btn";
+          increase.textContent = "+";
+          increase.setAttribute("aria-label", `Add one ${item.name}`);
+          increase.addEventListener("click", () => {
+            cart[id] = (cart[id] || 0) + 1;
+            writeCart(cart);
+            render();
+          });
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "qty-remove";
+          remove.textContent = "Remove";
+          remove.addEventListener("click", () => {
+            cart[id] = 0;
+            writeCart(cart);
+            render();
+          });
+          controls.append(decrease, amount, increase, remove);
+
+          const lineTotal = document.createElement("span");
+          lineTotal.className = "cart-line-total";
+          lineTotal.textContent = money(item.priceCents * quantity);
+
+          row.append(name, controls, lineTotal);
+          lines.append(row);
+        }
+
+        const filled = itemCount > 0;
+        emptyPanel.hidden = filled;
+        filledPanel.hidden = !filled;
+        count.textContent = String(itemCount);
+        total.textContent = money(totalCents);
+      }
+
+      document.getElementById("cart-clear").addEventListener("click", () => {
+        for (const id of Object.keys(cart)) cart[id] = 0;
+        writeCart(cart);
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>

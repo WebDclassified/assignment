@@ -1,0 +1,18 @@
+{
+  "name": "pathlens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pathlens — session tracking and click heatmap analytics (implementation workspace)",
+  "scripts": {
+    "start": "pnpm build && pnpm -r --parallel --filter @pathlens/api --filter @pathlens/dashboard run start",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "smoke": "pnpm --filter @pathlens/contracts build && pnpm --filter @pathlens/api build && node apps/api/scripts/smoke.mjs"
+  },
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

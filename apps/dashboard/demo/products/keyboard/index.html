@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slate Compact Keyboard — Aurora Supply</title>
+    <link rel="stylesheet" href="/demo/styles.css" />
+    <script
+      type="module"
+      src="/demo/tracker-entry.js"
+      data-api-base=""
+      data-site-id="demo-store"
+    ></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/demo/">Aurora<span class="brand-dot">.</span>Supply</a>
+      <nav aria-label="Main">
+        <a href="/demo/products/">Products</a>
+        <a href="/demo/cart/">Cart <span class="cart-count">0</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <p class="breadcrumbs">
+        <a href="/demo/">Home</a> / <a href="/demo/products/">Products</a> / Slate Compact Keyboard
+      </p>
+
+      <section class="product-detail">
+        <div>
+          <button
+            class="gallery-main"
+            id="gallery-main"
+            type="button"
+            aria-label="Slate keyboard product photo, click to zoom"
+          >
+            <svg width="230" height="150" viewBox="0 0 230 150" fill="none" role="img" aria-label="Slate compact keyboard, dark keycaps with green escape key">
+              <rect x="12" y="34" width="206" height="86" rx="14" fill="#1f1d18" />
+              <rect x="26" y="48" width="22" height="18" rx="4" fill="#faf7f2" />
+              <rect x="54" y="48" width="22" height="18" rx="4" fill="#faf7f2" />
+              <rect x="82" y="48" width="22" height="18" rx="4" fill="#faf7f2" />
+              <rect x="110" y="48" width="22" height="18" rx="4" fill="#faf7f2" />
+              <rect x="138" y="48" width="22" height="18" rx="4" fill="#faf7f2" />
+              <rect x="166" y="48" width="38" height="18" rx="4" fill="#16794a" />
+              <rect x="26" y="72" width="30" height="18" rx="4" fill="#faf7f2" />
+              <rect x="62" y="72" width="120" height="18" rx="4" fill="#faf7f2" />
+              <rect x="188" y="72" width="16" height="18" rx="4" fill="#faf7f2" />
+              <rect x="62" y="96" width="34" height="14" rx="4" fill="#faf7f2" />
+              <rect x="102" y="96" width="34" height="14" rx="4" fill="#faf7f2" />
+              <rect x="142" y="96" width="62" height="14" rx="4" fill="#faf7f2" />
+            </svg>
+          </button>
+          <p class="gallery-hint" id="gallery-hint">Click the photo to zoom — repeat clicks show up clearly on the heatmap.</p>
+        </div>
+        <div class="detail-info">
+          <h1>Slate Compact Keyboard</h1>
+          <p class="price">$129</p>
+          <p class="description">
+            A 65% layout with hot-swappable switches, PBT keycaps and a gasket
+            mount that keeps typing quiet at the office.
+          </p>
+          <ul class="detail-facts">
+            <li>Hot-swappable — no soldering required</li>
+            <li>Bluetooth + USB-C, three device profiles</li>
+            <li>Two-year repair guarantee</li>
+          </ul>
+          <div class="detail-actions">
+            <a class="btn" href="/demo/cart/?add=keyboard">Add to cart</a>
+            <a class="btn btn-quiet" href="/demo/products/">Back to products</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Aurora Supply is a fictional storefront used to generate Pathlens demo events.</p>
+    </footer>
+
+    <script>
+      const gallery = document.getElementById("gallery-main");
+      gallery.addEventListener("click", () => {
+        gallery.classList.toggle("zoomed");
+        document.getElementById("gallery-hint").textContent = gallery.classList.contains("zoomed")
+          ? "Zoomed in — click again to zoom out."
+          : "Click the photo to zoom — repeat clicks show up clearly on the heatmap.";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products — Aurora Supply</title>
+    <link rel="stylesheet" href="/demo/styles.css" />
+    <script
+      type="module"
+      src="/demo/tracker-entry.js"
+      data-api-base=""
+      data-site-id="demo-store"
+    ></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/demo/">Aurora<span class="brand-dot">.</span>Supply</a>
+      <nav aria-label="Main">
+        <a href="/demo/products/">Products</a>
+        <a href="/demo/cart/">Cart <span class="cart-count">0</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <p class="breadcrumbs"><a href="/demo/">Home</a> / Products</p>
+      <h1>All products</h1>
+
+      <div class="controls">
+        <label>
+          Category
+          <select id="category">
+            <option value="all">Everything</option>
+            <option value="audio">Audio</option>
+            <option value="desk">Desk</option>
+          </select>
+        </label>
+        <label>
+          Sort by
+          <select id="sort">
+            <option value="name">Name</option>
+            <option value="price">Price</option>
+          </select>
+        </label>
+        <label>
+          Search
+          <input type="search" id="search" placeholder="Search products…" />
+        </label>
+      </div>
+
+      <div class="product-grid" id="product-grid" style="margin-top: 20px">
+        <a
+          class="product-card"
+          href="/demo/products/headphones/"
+          data-category="audio"
+          data-price="189"
+          data-name="Drift Wireless Headphones"
+        >
+          <span class="thumb" aria-hidden="true">
+            <svg width="96" height="80" viewBox="0 0 96 80" fill="none">
+              <path d="M18 46a30 30 0 0 1 60 0" stroke="#1f1d18" stroke-width="6" stroke-linecap="round" />
+              <rect x="10" y="44" width="16" height="26" rx="8" fill="#16794a" />
+              <rect x="70" y="44" width="16" height="26" rx="8" fill="#16794a" />
+            </svg>
+          </span>
+          <h3>Drift Wireless Headphones</h3>
+          <span class="price">$189</span>
+          <span class="meta">40-hour battery · USB-C</span>
+        </a>
+        <a
+          class="product-card"
+          href="/demo/products/keyboard/"
+          data-category="desk"
+          data-price="129"
+          data-name="Slate Compact Keyboard"
+        >
+          <span class="thumb" aria-hidden="true">
+            <svg width="110" height="70" viewBox="0 0 110 70" fill="none">
+              <rect x="6" y="16" width="98" height="42" rx="8" fill="#1f1d18" opacity="0.85" />
+              <rect x="14" y="24" width="12" height="10" rx="2" fill="#faf7f2" />
+              <rect x="30" y="24" width="12" height="10" rx="2" fill="#faf7f2" />
+              <rect x="46" y="24" width="12" height="10" rx="2" fill="#faf7f2" />
+              <rect x="62" y="24" width="12" height="10" rx="2" fill="#faf7f2" />
+              <rect x="78" y="24" width="18" height="10" rx="2" fill="#16794a" />
+              <rect x="14" y="38" width="64" height="10" rx="2" fill="#faf7f2" />
+              <rect x="82" y="38" width="14" height="10" rx="2" fill="#faf7f2" />
+            </svg>
+          </span>
+          <h3>Slate Compact Keyboard</h3>
+          <span class="price">$129</span>
+          <span class="meta">Hot-swappable · PBT caps</span>
+        </a>
+        <a
+          class="product-card"
+          href="/demo/cart/?add=desk-mat"
+          data-category="desk"
+          data-price="44"
+          data-name="Harbor Desk Mat"
+        >
+          <span class="thumb" aria-hidden="true">
+            <svg width="110" height="70" viewBox="0 0 110 70" fill="none">
+              <rect x="8" y="20" width="94" height="34" rx="10" fill="#16794a" opacity="0.8" />
+              <rect x="16" y="27" width="78" height="20" rx="6" fill="#faf7f2" opacity="0.9" />
+            </svg>
+          </span>
+          <h3>Harbor Desk Mat</h3>
+          <span class="price">$44</span>
+          <span class="meta">Recycled felt · stitched edge</span>
+        </a>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>Aurora Supply is a fictional storefront used to generate Pathlens demo events.</p>
+    </footer>
+
+    <script>
+      const grid = document.getElementById("product-grid");
+      const category = document.getElementById("category");
+      const sort = document.getElementById("sort");
+      const search = document.getElementById("search");
+
+      function refresh() {
+        const term = search.value.trim().toLowerCase();
+        for (const card of grid.children) {
+          const matchesCategory =
+            category.value === "all" || card.dataset.category === category.value;
+          const matchesSearch = card.dataset.name.toLowerCase().includes(term);
+          card.hidden = !(matchesCategory && matchesSearch);
+        }
+      }
+
+      sort.addEventListener("change", () => {
+        const cards = [...grid.children];
+        cards.sort((a, b) =>
+          sort.value === "price"
+            ? Number(a.dataset.price) - Number(b.dataset.price)
+            : a.dataset.name.localeCompare(b.dataset.name),
+        );
+        for (const card of cards) grid.appendChild(card);
+      });
+      category.addEventListener("change", refresh);
+      search.addEventListener("input", refresh);
+    </script>
+  </body>
+</html>

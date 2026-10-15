@@ -1,0 +1,23 @@
+# Dependencies and build output
+node_modules
+dist
+build
+coverage
+*.tsbuildinfo
+
+# Secrets and local environment (templates like .env.example ARE committed)
+.env
+.env.local
+.env.test
+
+# Tooling and OS artifacts
+.vercel
+.freebuff
+.idea
+.DS_Store
+Thumbs.db
+*.log
+
+# Provided assignment brief — not project source, keep the repo lean
+/pathlens_user_analytics_implementation_pack
+/docs

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drift Wireless Headphones — Aurora Supply</title>
+    <link rel="stylesheet" href="/demo/styles.css" />
+    <script
+      type="module"
+      src="/demo/tracker-entry.js"
+      data-api-base=""
+      data-site-id="demo-store"
+    ></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/demo/">Aurora<span class="brand-dot">.</span>Supply</a>
+      <nav aria-label="Main">
+        <a href="/demo/products/">Products</a>
+        <a href="/demo/cart/">Cart <span class="cart-count">0</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <p class="breadcrumbs">
+        <a href="/demo/">Home</a> / <a href="/demo/products/">Products</a> / Drift Wireless Headphones
+      </p>
+
+      <section class="product-detail">
+        <div>
+          <button
+            class="gallery-main"
+            id="gallery-main"
+            type="button"
+            aria-label="Drift headphones product photo, click to zoom"
+          >
+            <svg width="220" height="170" viewBox="0 0 220 170" fill="none" role="img" aria-label="Drift wireless headphones, matte green finish">
+              <path d="M40 96a70 70 0 0 1 140 0" stroke="#1f1d18" stroke-width="10" stroke-linecap="round" />
+              <rect x="24" y="92" width="34" height="56" rx="17" fill="#16794a" />
+              <rect x="162" y="92" width="34" height="56" rx="17" fill="#16794a" />
+              <rect x="58" y="86" width="104" height="14" rx="7" fill="#1f1d18" opacity="0.7" />
+            </svg>
+          </button>
+          <p class="gallery-hint" id="gallery-hint">Click the photo to zoom — this is a great spot to check heatmap clicks.</p>
+        </div>
+        <div class="detail-info">
+          <h1>Drift Wireless Headphones</h1>
+          <p class="price">$189</p>
+          <p class="description">
+            Closed-back headphones with a warm signature, 40-hour battery and
+            replaceable ear pads. Charges over USB-C and pairs with two devices
+            at once.
+          </p>
+          <ul class="detail-facts">
+            <li>40-hour battery, 10-minute quick charge</li>
+            <li>Memory-foam pads, replaceable without tools</li>
+            <li>Two-year repair guarantee</li>
+          </ul>
+          <div class="detail-actions">
+            <a class="btn" href="/demo/cart/?add=headphones">Add to cart</a>
+            <a class="btn btn-quiet" href="/demo/products/">Back to products</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Aurora Supply is a fictional storefront used to generate Pathlens demo events.</p>
+    </footer>
+
+    <script>
+      const gallery = document.getElementById("gallery-main");
+      gallery.addEventListener("click", () => {
+        gallery.classList.toggle("zoomed");
+        document.getElementById("gallery-hint").textContent = gallery.classList.contains("zoomed")
+          ? "Zoomed in — click again to zoom out."
+          : "Click the photo to zoom — this is a great spot to check heatmap clicks.";
+      });
+    </script>
+  </body>
+</html>

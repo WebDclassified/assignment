@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout — Aurora Supply</title>
+    <link rel="stylesheet" href="/demo/styles.css" />
+    <script
+      type="module"
+      src="/demo/tracker-entry.js"
+      data-api-base=""
+      data-site-id="demo-store"
+    ></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/demo/">Aurora<span class="brand-dot">.</span>Supply</a>
+      <nav aria-label="Main">
+        <a href="/demo/products/">Products</a>
+        <a href="/demo/cart/">Cart <span class="cart-count" id="cart-count">0</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <p class="breadcrumbs">
+        <a href="/demo/">Home</a> / <a href="/demo/cart/">Cart</a> / Checkout
+      </p>
+
+      <section class="panel">
+        <h1>Checkout (simulation only)</h1>
+        <p>
+          This demo does not ask for personal or payment details. Pathlens records
+          anonymous page views and clicks, but never captures typed text, passwords,
+          payment details, or form submissions.
+        </p>
+
+        <div class="checkout-summary" id="checkout-summary">
+          <h2>Order summary</h2>
+          <div id="checkout-lines"></div>
+          <div class="cart-total">
+            <span>Total</span>
+            <span id="checkout-total">$0</span>
+          </div>
+        </div>
+
+        <form class="checkout-form" id="checkout-form">
+          <fieldset class="fulfillment">
+            <legend>How should we prepare this demo order?</legend>
+            <div class="fulfillment-options">
+              <button type="button" class="fulfillment-option fulfillment-option-active" data-method="Pickup">Pickup</button>
+              <button type="button" class="fulfillment-option" data-method="Local delivery">Local delivery</button>
+            </div>
+          </fieldset>
+          <button class="btn" type="submit">Place demo order</button>
+        </form>
+
+        <p class="checkout-note" id="checkout-note" hidden></p>
+
+        <div class="cart-actions">
+          <a class="btn btn-quiet" href="/demo/cart/">Back to cart</a>
+          <a class="btn btn-quiet" href="/demo/products/">Keep browsing</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Aurora Supply is a fictional storefront used to generate Pathlens demo events.</p>
+    </footer>
+
+    <script>
+      const CATALOG = {
+        headphones: { name: "Drift Wireless Headphones", priceCents: 18900 },
+        keyboard: { name: "Slate Compact Keyboard", priceCents: 12900 },
+        "desk-mat": { name: "Harbor Desk Mat", priceCents: 4400 },
+      };
+      const STORAGE_KEY = "aurora-cart-v1";
+
+      function readCart() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+          return typeof parsed === "object" && parsed !== null ? parsed : {};
+        } catch {
+          return {};
+        }
+      }
+
+      function money(cents) {
+        return `$${(cents / 100).toFixed(0)}`;
+      }
+
+      const cart = readCart();
+      const lines = document.getElementById("checkout-lines");
+      const form = document.getElementById("checkout-form");
+      const note = document.getElementById("checkout-note");
+      const options = [...document.querySelectorAll(".fulfillment-option")];
+      let fulfillment = options[0].dataset.method;
+      let itemCount = 0;
+      let totalCents = 0;
+
+      for (const [id, quantity] of Object.entries(cart)) {
+        if (!CATALOG[id] || quantity <= 0) continue;
+        itemCount += quantity;
+        totalCents += CATALOG[id].priceCents * quantity;
+        const row = document.createElement("div");
+        row.className = "cart-line";
+        const name = document.createElement("span");
+        name.textContent = `${CATALOG[id].name} × ${quantity}`;
+        const amount = document.createElement("span");
+        amount.textContent = money(CATALOG[id].priceCents * quantity);
+        row.append(name, amount);
+        lines.append(row);
+      }
+
+      document.getElementById("cart-count").textContent = String(itemCount);
+      document.getElementById("checkout-total").textContent = money(totalCents);
+      if (itemCount === 0) {
+        form.hidden = true;
+        note.hidden = false;
+        note.textContent = "Your cart is empty. Add a product before simulating checkout.";
+      }
+
+      for (const option of options) {
+        option.addEventListener("click", () => {
+          fulfillment = option.dataset.method;
+          for (const other of options) {
+            other.classList.toggle("fulfillment-option-active", other === option);
+          }
+        });
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const orderId = `AUR-${Date.now().toString(36).toUpperCase()}`;
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch {
+          // Ignore storage failures during the demo.
+        }
+        document.getElementById("cart-count").textContent = "0";
+        form.hidden = true;
+        note.hidden = false;
+        note.textContent = `Demo order ${orderId} simulated for ${itemCount} item(s), ${money(totalCents)}, via ${fulfillment}. Nothing was charged and no form details were sent.`;
+      });
+    </script>
+  </body>
+</html>
