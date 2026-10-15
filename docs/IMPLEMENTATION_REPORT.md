@@ -149,9 +149,14 @@ start`, Vercel same-origin deployment, and 101 passing tests.
   runtime), not the routing topology.
 - Fix: the api service now builds a self-contained esbuild bundle
   (`dist/server.bundle.cjs`, mongodb inlined, optional native deps external)
-  and serves it via `entrypoint`. Proven locally: the bundle boots against
-  Atlas, ingests, deduplicates, and serves reads with no `node_modules`
-  involvement (no `require("mongodb")` remains in the bundle).
+and serves it via `entrypoint`. Proven locally: the bundle boots against
+Atlas, ingests, deduplicates, and serves reads with no `node_modules`
+involvement (no `require("mongodb")` remains in the bundle).
+- Follow-up: `entrypoint` is validated before the build, so it cannot point
+  at gitignored output. A committed one-line shim
+  (`apps/api/service-entry.cjs`) loads the freshly built bundle; proven by
+  deleting the bundle, rebuilding via the exact service build steps, and
+  booting through the shim.
 - `vercel.json` api service gained the explicit `entrypoint`; dashboard
   service unchanged.
 
