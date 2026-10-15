@@ -32,9 +32,13 @@ Useful commands: `pnpm test`, `pnpm lint`, `pnpm typecheck`, `pnpm build`,
 `pnpm smoke`, `pnpm --filter @pathlens/api test:integration`.
 
 To deploy on Vercel: push to GitHub, import the repo (root directory stays at
-the repo root — build, output, and rewrites come from `vercel.json`), set
-`MONGODB_URI`, and allow `0.0.0.0/0` in Atlas Network Access. Dashboard, demos,
-and API share one origin, so no CORS setup is needed.
+the repo root — services, builds, and rewrites come from `vercel.json`), set
+`MONGODB_URI`, and allow `0.0.0.0/0` in Atlas Network Access. The project
+deploys as two services on one domain — `api` (Express, serves `/api/*` and
+`/health`) and `dashboard` (Vite static build, serves everything else) — so
+dashboard, demos, and API share one origin and no CORS setup is needed. There
+are no inter-service bindings: the browser calls the API over the public
+routes, and the API only calls external MongoDB Atlas.
 
 ## Tech stack
 

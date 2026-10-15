@@ -8,7 +8,7 @@ observed failure. Full detail in `docs/CURRENT_STATE_AUDIT.md`.
 ## What was inspected
 
 Every source file across `packages/contracts`, `packages/tracker`,
-`apps/api`, `apps/dashboard` (+ demo), `api/index.ts`, `vercel.json`,
+`apps/api`, `apps/dashboard` (+ demos), `vercel.json`,
 environment templates, the implementation pack (all 14 docs + specs), and the
 design tokens/concept image. Plus: full test runs, production builds, and live
 runs against MongoDB Atlas.
@@ -124,6 +124,21 @@ start`, Vercel same-origin deployment, and 101 passing tests.
   layout shift, wrapping headers, scroll-safe tables, tablet rail overflow,
   and control-height rhythm.
 - All 113 tests green; production build + live Atlas verification repeated.
+
+## Follow-up pass (Vercel services migration)
+
+- `vercel.json` converted to services mode: `api` (Express, `apps/api`) and
+  `dashboard` (Vite, `apps/dashboard`) on one domain. Verified from the docs
+  that services receive original paths, the filesystem wins over the SPA
+  fallback, and `maxDuration: 30` was safe to drop (300s default everywhere).
+- Zero bindings: the only cross-service traffic is browser-side fetch over
+  public rewrites; the API only calls external Atlas.
+- Each service builds `@pathlens/contracts` first (gitignored `dist` would
+  otherwise break fresh-clone builds).
+- Deleted repo-root `api/` (invalid + duplicate-function risk in services
+  mode) and the now-unreferenced `src/serverless.ts`. `src/server.ts` left
+  untouched — it already matches the documented Express detection pattern.
+- README + architecture docs updated for the services topology.
 
 ## Remaining limitations
 

@@ -1,6 +1,10 @@
 # Architecture
 
-Pathlens is a pnpm monorepo with four workspace packages and one serverless entry.
+Pathlens is a pnpm monorepo with four workspace packages, deployed on Vercel
+as two services (`vercel.json`) sharing one domain: `api` (Express) and
+`dashboard` (Vite static build). There are no inter-service bindings — the
+browser calls the API over the public rewrites, and the API only calls
+external MongoDB Atlas.
 
 ```text
 pathlens/
@@ -8,10 +12,8 @@ pathlens/
 │   ├── contracts/      # shared Zod schemas + TypeScript types
 │   └── tracker/        # framework-free browser SDK (IIFE bundle)
 ├── apps/
-│   ├── api/            # Express API (long-lived server + serverless)
-│   └── dashboard/      # React dashboard + static demo storefront (/demo)
-├── api/
-│   └── index.ts        # Vercel serverless entry (reuses the Express app)
+│   ├── api/            # Express API (long-lived server + Vercel service)
+│   └── dashboard/      # React dashboard + static demo storefronts
 └── docs/               # this documentation set
 ```
 
@@ -40,8 +42,9 @@ pathlens/
 - Sessions are derived views over the event stream, never separately stored
   counters — retries therefore cannot drift the totals.
 - The same Express app serves both the long-lived Node process
-  (`src/server.ts`) and Vercel serverless (`api/index.ts`), which rebuilds the
-  app once per isolate and reuses the MongoDB connection.
+  (`src/server.ts`, `app.listen`) and the Vercel `api` service, which detects
+  it via the Express framework support and routes the original request paths
+  (`/health`, `/api/v1/*`) straight into Express — no path rewriting in code.
 
 ## Deliberate non-goals
 

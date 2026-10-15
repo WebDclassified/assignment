@@ -1,16 +1,20 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": "pnpm --filter @pathlens/contracts build && pnpm --filter @pathlens/dashboard build",
-  "outputDirectory": "apps/dashboard/dist",
-  "functions": {
-    "api/index.ts": {
-      "maxDuration": 30
+  "services": {
+    "api": {
+      "root": "apps/api",
+      "framework": "express",
+      "buildCommand": "pnpm --filter @pathlens/contracts build"
+    },
+    "dashboard": {
+      "root": "apps/dashboard",
+      "framework": "vite",
+      "buildCommand": "pnpm --filter @pathlens/contracts build && pnpm build"
     }
   },
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index" },
-    { "source": "/health", "destination": "/api/index" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": { "service": "api" } },
+    { "source": "/health", "destination": { "service": "api" } },
+    { "source": "/(.*)", "destination": { "service": "dashboard" } }
   ]
 }
